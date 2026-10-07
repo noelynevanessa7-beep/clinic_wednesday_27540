@@ -1,0 +1,15 @@
+$kind: http-request
+name: http://localhost:8084/api/office/save
+description: ""
+url: http://localhost:8084/api/office/save
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Room A\",\r
+
+    \  \"officeNumber\": 1\r
+
+    }"
+order: 1790786539022
