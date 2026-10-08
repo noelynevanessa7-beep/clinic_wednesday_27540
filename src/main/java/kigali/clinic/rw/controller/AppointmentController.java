@@ -10,10 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import kigali.clinic.rw.domain.Appointment;
+import kigali.clinic.rw.domain.AppointmentStatus;
 import kigali.clinic.rw.service.AppointmentService;
 
 @RestController
-@RequestMapping(value = "/api/appointment")
+@RequestMapping(value = {"/api/appointment", "/api/appointments"})
 public class AppointmentController {
 
     @Autowired
@@ -59,11 +60,16 @@ public class AppointmentController {
         return new ResponseEntity<>(appServe.getBySpecialization(name), HttpStatus.OK);
     }
 
-    // QUERY 5 (pagination): page 1, 10 per page, sorted by date (both can be changed in the URL)
+    
     @GetMapping("/doctor/{doctorId}/page")
     public ResponseEntity<Page<Appointment>> getPageOfDoctor(@PathVariable UUID doctorId,
                                                              @RequestParam(defaultValue = "1") int page,
                                                              @RequestParam(defaultValue = "10") int size) {
         return new ResponseEntity<>(appServe.getPageOfDoctor(doctorId, page, size), HttpStatus.OK);
+    }
+    
+    @GetMapping ("/by-status")
+    public ResponseEntity<List<Appointment>> getByStatus(@RequestParam AppointmentStatus status) {
+        return new ResponseEntity<>(appServe.getByStatus(status), HttpStatus.OK);
     }
 }

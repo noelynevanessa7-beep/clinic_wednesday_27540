@@ -81,4 +81,8 @@ public class AppointmentService {
         return appRepo.findByDoctorId(doctorId,
                 PageRequest.of(pageIndex, pageSize, Sort.by("appointmentDate").ascending()));
     }
+
+    public List<Appointment> getByStatus(AppointmentStatus status) {
+        return appRepo.findByStatusOrderByAppointmentDateAsc(status);
+    }
 }
