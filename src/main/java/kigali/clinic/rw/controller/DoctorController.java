@@ -13,7 +13,7 @@ import kigali.clinic.rw.domain.Specialization;
 import kigali.clinic.rw.service.DoctorService;
 
 @RestController
-@RequestMapping(value = "/api/doctor")
+@RequestMapping(value = {"/api/doctor", "/api/doctors"})
 public class DoctorController {
 
     @Autowired
@@ -73,5 +73,14 @@ public class DoctorController {
     public ResponseEntity<?> deleteDoctor(@PathVariable UUID id) {
         String msg = docServe.deleteDoctor(id);
         return new ResponseEntity<>(msg, statusFor(msg));
+    }
+
+    @GetMapping ("/by-specialization")
+    public ResponseEntity<List<Doctor>> getBySpecialization(@RequestParam String name) {
+        return new ResponseEntity<>(docServe.getBySpecialization(name), HttpStatus.OK);
+    }
+    @GetMapping ("/without-office")
+    public ResponseEntity<List<Doctor>> getWithoutOffice() {
+        return new ResponseEntity<>(docServe.getWithoutOffice(), HttpStatus.OK);
     }
 }

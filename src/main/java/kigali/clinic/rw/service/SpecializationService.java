@@ -116,4 +116,8 @@ public class SpecializationService {
         specRepo.save(spec);
         return "Doctor is removed from specialization successfully";
     }
+
+    public List<Specialization> getUnused() {
+        return specRepo.findUnusedSpecializations();
+    }
 }

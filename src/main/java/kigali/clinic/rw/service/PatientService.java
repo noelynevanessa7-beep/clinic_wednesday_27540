@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kigali.clinic.rw.domain.Patient;
+import kigali.clinic.rw.repository.DoctorRepository;
 import kigali.clinic.rw.repository.PatientRepository;
 
 @Service
@@ -15,6 +16,9 @@ public class PatientService {
 
     @Autowired
     private PatientRepository patRepo;
+
+    @Autowired
+    private DoctorRepository docRepo;
 
     // CREATE
     public String savePatient(Patient patient) {
@@ -61,4 +65,12 @@ public class PatientService {
         patRepo.delete(patient);
         return "Patient is deleted successfully";
     }
+
+    public List<Patient> getPatientsOfDoctor(UUID doctorId) {
+        if (!docRepo.existsById(doctorId)) {
+            return null; 
+        }
+        return patRepo.findPatientsOfDoctor(doctorId);
+    }
+    
 }

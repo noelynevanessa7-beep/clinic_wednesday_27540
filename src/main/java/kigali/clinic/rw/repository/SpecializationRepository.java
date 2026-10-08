@@ -1,9 +1,11 @@
 package kigali.clinic.rw.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import kigali.clinic.rw.domain.Specialization;
@@ -12,4 +14,8 @@ import kigali.clinic.rw.domain.Specialization;
 public interface SpecializationRepository extends JpaRepository<Specialization, UUID> {
 
     Optional<Specialization> findByName(String name);
+
+    @Query ("SELECT s FROM Specialization s JOIN s.doctors d WHERE d.id = :doctorId")
+    List<Specialization> findUnusedSpecializations();
+    
 }

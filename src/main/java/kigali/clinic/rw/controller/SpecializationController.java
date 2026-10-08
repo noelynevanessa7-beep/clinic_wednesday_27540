@@ -12,7 +12,7 @@ import kigali.clinic.rw.domain.Specialization;
 import kigali.clinic.rw.service.SpecializationService;
 
 @RestController
-@RequestMapping(value = "/api/specialization")
+@RequestMapping(value = {"/api/specialization", "/api/specializations"})
 public class SpecializationController {
 
     @Autowired
@@ -75,5 +75,10 @@ public class SpecializationController {
     public ResponseEntity<?> removeDoctor(@PathVariable UUID id, @PathVariable UUID doctorId) {
         String msg = specServe.removeDoctor(id, doctorId);
         return new ResponseEntity<>(msg, statusFor(msg));
+    }
+
+    @GetMapping("/unused")
+    public ResponseEntity<List<Specialization>> getUnusedSpecializations() {
+        return new ResponseEntity<>(specServe.getUnused(), HttpStatus.OK);
     }
 }

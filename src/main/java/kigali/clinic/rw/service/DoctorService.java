@@ -101,4 +101,12 @@ public class DoctorService {
         docRepo.delete(doctor);
         return "Doctor is deleted successfully";
     }
+
+    public List<Doctor> getBySpecialization(String name) {
+        return docRepo.findBySpecializationName(name);
+    }
+
+    public List<Doctor> getWithoutOffice() {
+        return docRepo.findDoctorsWithoutOffice();
+    }
 }
