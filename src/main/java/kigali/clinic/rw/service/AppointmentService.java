@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,10 @@ public class AppointmentService {
         return appRepo.findAll();
     }
 
+    public List<Appointment> getPage(Pageable pageable) {
+        return appRepo.findAll(pageable).getContent();
+    }
+
     // QUERY 1 (derived)
     public List<Appointment> getPendingOfDoctor(UUID doctorId) {
         return appRepo.findByDoctorIdAndStatusOrderByAppointmentDateAsc(doctorId, AppointmentStatus.PENDING);
@@ -103,5 +108,11 @@ public class AppointmentService {
     public String cancelDay(UUID doctorId, String date) {
         int n = appRepo.cancelDayOfDoctor(doctorId, Date.valueOf(date), AppointmentStatus.CANCELLED, AppointmentStatus.COMPLETED);
         return n + " appointments cancelled";
+    }
+
+    @Transactional
+    public String deleteCancelledBefore( String date) {
+        int n = appRepo.deleteByStatusBefore(AppointmentStatus.CANCELLED, Date.valueOf(date));
+        return n + " appointments deleted";
     }
 }

@@ -6,6 +6,9 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,7 @@ public class AppointmentController {
     @Autowired
     private AppointmentService appServe;
 
+
     // CREATE (so that the queries have data): /save?patientId=...&doctorId=...
     @PostMapping(value = "/save")
     public ResponseEntity<?> saveAppointment(@RequestBody Appointment appointment,
@@ -34,6 +38,11 @@ public class AppointmentController {
             status = HttpStatus.CONFLICT;
         }
         return new ResponseEntity<>(msg, status);
+    }
+
+    @DeleteMapping ("/Cancelled-before")
+    public ResponseEntity<String> deleteCancelledBefore(@RequestParam String date) {
+        return new ResponseEntity<>(appServe.deleteCancelledBefore(date), HttpStatus.OK);
     }
 
     @PatchMapping("/cancel-day")
@@ -96,5 +105,19 @@ public class AppointmentController {
     @GetMapping("/stats/by-status")
     public ResponseEntity<List<Object[]>> getStatsByStatus() {
         return new ResponseEntity<>(appServe.countByStatus(), HttpStatus.OK);
+    }
+
+    @GetMapping ("/page")
+    public ResponseEntity<List<Appointment>> getPage(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size,
+                                                     @RequestParam(defaultValue = "appointmentDate,desc") String sort) {
+
+        String[] parts = sort.split(",");
+        Sort.Direction direction = Sort.Direction.ASC;
+        if (parts.length > 1 && parts[1].equalsIgnoreCase("desc")) {
+            direction = Sort.Direction.DESC;
+        }                                                
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, parts[0]));
+        return new ResponseEntity<>(appServe.getPage(pageable), HttpStatus.OK);
     }
 }
