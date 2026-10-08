@@ -12,7 +12,7 @@ import kigali.clinic.rw.domain.Patient;
 import kigali.clinic.rw.service.PatientService;
 
 @RestController
-@RequestMapping(value = "/api/patient")
+@RequestMapping(value = {"/api/patient", "/api/patients"})
 public class PatientController {
 
     @Autowired
@@ -35,6 +35,11 @@ public class PatientController {
     @GetMapping
     public ResponseEntity<List<Patient>> getAllPatients() {
         return new ResponseEntity<>(patServe.getAllPatients(), HttpStatus.OK);
+    }
+    
+    @GetMapping("/by-last-name")
+    public ResponseEntity<List<Patient>> getPatientsByLastName(@RequestParam String lastName) {
+        return new ResponseEntity<>(patServe.getPatientsByLastName(lastName), HttpStatus.OK);
     }
 
     // READ ONE
