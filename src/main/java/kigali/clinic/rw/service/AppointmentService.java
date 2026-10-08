@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kigali.clinic.rw.domain.Appointment;
 import kigali.clinic.rw.domain.AppointmentStatus;
@@ -92,5 +93,15 @@ public class AppointmentService {
 
     public List<Appointment> getBetween(LocalDate startDate, LocalDate endDate) {
         return appRepo.findByAppointmentDateBetweenOrderByAppointmentDateAsc(Date.valueOf(startDate), Date.valueOf(endDate));
+    }
+
+    public List<Object[]> countByStatus() {
+        return appRepo.countByStatus();
+    }
+
+    @Transactional 
+    public String cancelDay(UUID doctorId, String date) {
+        int n = appRepo.cancelDayOfDoctor(doctorId, Date.valueOf(date), AppointmentStatus.CANCELLED, AppointmentStatus.COMPLETED);
+        return n + " appointments cancelled";
     }
 }

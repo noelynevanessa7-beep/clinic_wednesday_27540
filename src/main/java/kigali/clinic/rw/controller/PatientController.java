@@ -74,4 +74,9 @@ public class PatientController {
         }
         return new ResponseEntity<>(patients, HttpStatus.OK);
     }
+
+    @GetMapping ("/frequent")
+    public ResponseEntity<List<Patient>> getFrequent(@RequestParam long min) {
+        return new ResponseEntity<>(patServe.getFrequent(min), HttpStatus.OK);
+    }
 }

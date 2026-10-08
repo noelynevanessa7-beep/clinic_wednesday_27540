@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -17,11 +18,10 @@ import kigali.clinic.rw.domain.AppointmentStatus;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
 
-    // 1. DERIVED: all appointments of a doctor with a given status, oldest date first
+    
     List<Appointment> findByDoctorIdAndStatusOrderByAppointmentDateAsc(UUID doctorId, AppointmentStatus status);
 
-    // 2. JPQL: appointments with a given status whose date has already passed
-    //    (JOIN FETCH loads the patient and the doctor in the same SQL query)
+    
     @Query("SELECT a FROM Appointment a "
          + "JOIN FETCH a.patient p "
          + "JOIN FETCH a.doctor d "
@@ -30,8 +30,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findOverdueByStatus(@Param("status") AppointmentStatus status,
                                           @Param("today") Date today);
 
-    // 3. AGGREGATE: number of appointments per doctor, busiest first
-    //    each row = [firstName, lastName, count]
+    
     @Query("SELECT d.firstName, d.lastName, COUNT(a) "
          + "FROM Appointment a JOIN a.doctor d "
          + "GROUP BY d.id, d.firstName, d.lastName "
@@ -52,5 +51,15 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findByAppointmentDateBetweenOrderByAppointmentDateAsc(Date startDate, Date endDate);
      
     boolean existsByDoctorIdAndAppointmentDateAndStatusNot(UUID doctorId, Date appointmentDate, AppointmentStatus status);
+
+    @Query ("SELECT a.status, COUNT(a) FROM Appointment a GROUP BY a.status")
+    List<Object[]> countByStatus();
+
+    @Query("SELECT o.name, o.officeNumber, COUNT(a) FROM Appointment a JOIN a.doctor d JOIN d.office o GROUP BY o.id, o.name, o.officeNumber ORDER BY COUNT(a) DESC")
+     List<Object[]> findBusiestOffice(Pageable pageable);
+
+     @Modifying 
+     @Query("UPDATE Appointment a SET a.status = :newStatus WHERE a.doctor.id = :doctorId AND a.appointmentDate = :date AND a.status <> :keepStatus")
+     int cancelDayOfDoctor(@Param("doctorId") UUID doctorId, @Param("date") Date date, @Param("newStatus") AppointmentStatus newStatus, @Param("keepStatus") AppointmentStatus keepStatus);
 
 }

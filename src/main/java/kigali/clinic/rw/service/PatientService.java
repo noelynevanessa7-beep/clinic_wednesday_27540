@@ -39,6 +39,10 @@ public class PatientService {
         return patRepo.findByLastNameContainingIgnoreCaseOrderByFirstNameAsc(lastName);
     }
 
+    public List<Patient> getFrequent(long min) {
+        return patRepo.findFrequentPatients(min);
+    }
+
     // UPDATE
     public String updatePatient(UUID id, Patient updated) {
         Patient patient = patRepo.findById(id).orElse(null);
@@ -72,5 +76,5 @@ public class PatientService {
         }
         return patRepo.findPatientsOfDoctor(doctorId);
     }
-    
+
 }

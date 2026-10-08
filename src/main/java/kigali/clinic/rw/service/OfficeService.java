@@ -3,12 +3,16 @@ package kigali.clinic.rw.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import kigali.clinic.rw.domain.Office;
 import kigali.clinic.rw.repository.OfficeRepository;
+import kigali.clinic.rw.repository.AppointmentRepository;
+
 
 @Service
 public class OfficeService {
@@ -63,5 +67,12 @@ public class OfficeService {
         }
         offRepo.delete(office);
         return "Office is deleted successfully";
+    }
+
+    @Autowired 
+    private AppointmentRepository appRepo;
+     
+    public List<Object[]> getBusiestOffices() {
+        return appRepo.findBusiestOffice(PageRequest.of(0, 1));
     }
 }

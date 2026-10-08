@@ -36,6 +36,12 @@ public class AppointmentController {
         return new ResponseEntity<>(msg, status);
     }
 
+    @PatchMapping("/cancel-day")
+    public ResponseEntity<String> cancelDay(@RequestParam UUID doctorId, @RequestParam String date) {
+    
+        return new ResponseEntity<>(appServe.cancelDay(doctorId, date), HttpStatus.OK);
+    }
+
     // READ ALL
     @GetMapping
     public ResponseEntity<List<Appointment>> getAllAppointments() {
@@ -85,5 +91,10 @@ public class AppointmentController {
         LocalDate startDate = LocalDate.parse(start);
         LocalDate endDate = LocalDate.parse(end);                                                    
         return new ResponseEntity<>(appServe.getBetween(startDate, endDate), HttpStatus.OK);
+    }
+
+    @GetMapping("/stats/by-status")
+    public ResponseEntity<List<Object[]>> getStatsByStatus() {
+        return new ResponseEntity<>(appServe.countByStatus(), HttpStatus.OK);
     }
 }
