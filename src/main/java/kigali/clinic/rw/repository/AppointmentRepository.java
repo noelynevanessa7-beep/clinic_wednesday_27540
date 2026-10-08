@@ -49,5 +49,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     // 5. PAGINATION: one page of a doctor's appointments (page size and sorting come from the Pageable)
     Page<Appointment> findByDoctorId(UUID doctorId, Pageable pageable);
     List<Appointment> findByStatusOrderByAppointmentDateAsc(AppointmentStatus status);
+    List<Appointment> findByAppointmentDateBetweenOrderByAppointmentDateAsc(Date startDate, Date endDate);
+     
+    boolean existsByDoctorIdAndAppointmentDateAndStatusNot(UUID doctorId, Date appointmentDate, AppointmentStatus status);
 
 }

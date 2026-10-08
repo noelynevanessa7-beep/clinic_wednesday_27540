@@ -1,5 +1,6 @@
 package kigali.clinic.rw.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +27,12 @@ public class AppointmentController {
                                              @RequestParam UUID patientId,
                                              @RequestParam UUID doctorId) {
         String msg = appServe.saveAppointment(appointment, patientId, doctorId);
-        HttpStatus status = msg.endsWith("successfully") ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+        HttpStatus status = HttpStatus.OK;
+        if (msg.contains("not found")) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (!msg.endsWith("successfully")) {
+            status = HttpStatus.CONFLICT;
+        }
         return new ResponseEntity<>(msg, status);
     }
 
@@ -71,5 +77,13 @@ public class AppointmentController {
     @GetMapping ("/by-status")
     public ResponseEntity<List<Appointment>> getByStatus(@RequestParam AppointmentStatus status) {
         return new ResponseEntity<>(appServe.getByStatus(status), HttpStatus.OK);
+    }
+
+    @GetMapping ("/between")
+    public ResponseEntity<List<Appointment>> getBetween(@RequestParam String start,
+                                                         @RequestParam String end) {
+        LocalDate startDate = LocalDate.parse(start);
+        LocalDate endDate = LocalDate.parse(end);                                                    
+        return new ResponseEntity<>(appServe.getBetween(startDate, endDate), HttpStatus.OK);
     }
 }

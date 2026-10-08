@@ -44,6 +44,10 @@ public class AppointmentService {
         if (appointment.getStatus() == null) {
             appointment.setStatus(AppointmentStatus.PENDING);
         }
+        boolean booked = appRepo.existsByDoctorIdAndAppointmentDateAndStatusNot(doctorId, appointment.getAppointmentDate(), AppointmentStatus.CANCELLED);
+        if (booked) {
+            return "Doctor is already booked on that date";
+        }
         appointment.setPatient(patient);
         appointment.setDoctor(doctor);
         appRepo.save(appointment);
@@ -84,5 +88,9 @@ public class AppointmentService {
 
     public List<Appointment> getByStatus(AppointmentStatus status) {
         return appRepo.findByStatusOrderByAppointmentDateAsc(status);
+    }
+
+    public List<Appointment> getBetween(LocalDate startDate, LocalDate endDate) {
+        return appRepo.findByAppointmentDateBetweenOrderByAppointmentDateAsc(Date.valueOf(startDate), Date.valueOf(endDate));
     }
 }
