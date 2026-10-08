@@ -15,7 +15,7 @@ public interface SpecializationRepository extends JpaRepository<Specialization, 
 
     Optional<Specialization> findByName(String name);
 
-    @Query ("SELECT s FROM Specialization s JOIN s.doctors d WHERE d.id = :doctorId")
+    @Query ("SELECT s FROM Specialization s WHERE s.doctors IS EMPTY")
     List<Specialization> findUnusedSpecializations();
-    
+
 }

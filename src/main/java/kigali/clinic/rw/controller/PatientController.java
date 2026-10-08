@@ -65,4 +65,13 @@ public class PatientController {
         String msg = patServe.deletePatient(id);
         return new ResponseEntity<>(msg, statusFor(msg));
     }
+
+    @GetMapping ("/of-doctor/{doctorId}")
+    public ResponseEntity<?> getPatientsOfDoctor(@PathVariable UUID doctorId) {
+        List<Patient> patients = patServe.getPatientsOfDoctor(doctorId);
+        if (patients == null) {
+            return new ResponseEntity<>("Doctor not found with id: " + doctorId, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
 }
