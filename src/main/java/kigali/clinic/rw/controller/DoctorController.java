@@ -83,4 +83,30 @@ public class DoctorController {
     public ResponseEntity<List<Doctor>> getWithoutOffice() {
         return new ResponseEntity<>(docServe.getWithoutOffice(), HttpStatus.OK);
     }
+
+    @PutMapping ("/{doctorId}/specializations/{specializationId}")
+    public ResponseEntity<String> addSpecializationToDoctor(@PathVariable UUID doctorId, @PathVariable UUID specializationId) {
+        String msg = docServe.assignSpecializationToDoctor(doctorId, specializationId);
+        HttpStatus status =  HttpStatus.OK ;
+        if (msg.contains("does not exist")) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (!msg.startsWith("Specialization")) {
+            status = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity<>(msg, status);
+    }
+
+    @DeleteMapping ("/{doctorId}/specializations/{specializationId}")
+    public ResponseEntity<String> removeSpecializationFromDoctor(@PathVariable UUID doctorId, @PathVariable UUID specializationId) {
+        String msg = docServe.removeSpecializationFromDoctor(doctorId, specializationId);
+        HttpStatus status =  HttpStatus.OK ;
+        if (msg.contains("does not exist")) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (!msg.startsWith("Specialization")) {
+            status = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity<>(msg, status);
+    }
 }
