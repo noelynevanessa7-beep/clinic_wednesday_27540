@@ -98,6 +98,11 @@ public class DoctorService {
         for (Specialization s : new ArrayList<>(doctor.getSpecializations())) {
             s.getDoctors().remove(doctor);
         }
+
+        Office office = doctor.getOffice();
+        if (office != null) {
+            office.setDoctor(null);
+        }
         docRepo.delete(doctor);
         return "Doctor is deleted successfully";
     }
