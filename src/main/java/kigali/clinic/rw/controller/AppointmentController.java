@@ -34,6 +34,8 @@ public class AppointmentController {
         HttpStatus status = HttpStatus.OK;
         if (msg.contains("not found")) {
             status = HttpStatus.NOT_FOUND;
+        } else if (msg.contains("cannot be in the past")) {
+            status = HttpStatus.BAD_REQUEST;
         } else if (!msg.endsWith("successfully")) {
             status = HttpStatus.CONFLICT;
         }
@@ -119,5 +121,32 @@ public class AppointmentController {
         }                                                
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, parts[0]));
         return new ResponseEntity<>(appServe.getPage(pageable), HttpStatus.OK);
+    }
+
+    @PatchMapping ("/{id}/status")
+    public ResponseEntity<String> changeStatus(@PathVariable UUID id, @RequestParam AppointmentStatus status) {
+        String msg = appServe.changeStatus(id, status);
+        HttpStatus httpStatus = HttpStatus.OK;
+        if (msg.contains("does not exist")) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } else if (!msg.endsWith("Cannot change")) {
+            httpStatus = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(msg, httpStatus);
+    }
+
+    @PatchMapping ("/{id}/reschedule")
+    public ResponseEntity<String> reschedul(@PathVariable UUID id, @RequestParam String newDate) {
+        String msg = appServe.reschedule(id, newDate);
+        HttpStatus httpStatus = HttpStatus.OK;
+        if (msg.contains("does not exist")) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } else if (msg.contains("cannot be rescheduled") || msg.contains("cannot be in the past")) {
+            httpStatus = HttpStatus.BAD_REQUEST;
+        
+        } else if (!msg.endsWith("successfully")) {
+            httpStatus = HttpStatus.BAD_REQUEST;
+        }
+        return new ResponseEntity<>(msg, httpStatus);
     }
 }
