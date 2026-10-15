@@ -176,6 +176,10 @@ public class DoctorService {
         
         return "Office changed successfully";
     }
+
+    public List<Doctor> searchDoctors(String name) {
+        return docRepo.searchByName(name);
+    }
 }
 
 

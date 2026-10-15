@@ -182,4 +182,19 @@ public class AppointmentService {
         return "Appointment deleted successfully";
     }
 
+    public List<Appointment> getAgenda(UUID doctorId, String date) {
+        if (!docRepo.existsById(doctorId)) {
+            return null;
+        }
+        return appRepo.findByDoctorIdAndAppointmentDateAndStatusNot(doctorId, Date.valueOf(date), AppointmentStatus.CANCELLED);
+    }
+
+    public List<Appointment> getUpcoming(String ssNumber) {
+        if (!patRepo.existsBySsNumber(ssNumber)) {
+            return null;
+
+        } 
+        List<AppointmentStatus> statuses = List.of(AppointmentStatus.SCHEDULED, AppointmentStatus.CONFIRMED);
+        return appRepo.findByPatientSsNumberAndAppointmentDateGreaterThanEqualAndStatusInOrderByAppointmentDateAsc(ssNumber,Date.valueOf(LocalDate.now()), statuses);
+    }
 }

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import kigali.clinic.rw.domain.Patient;
+import kigali.clinic.rw.domain.Appointment;
+import kigali.clinic.rw.service.AppointmentService;
 import kigali.clinic.rw.service.PatientService;
 
 @RestController
@@ -17,6 +19,9 @@ public class PatientController {
 
     @Autowired
     private PatientService patServe;
+
+    @Autowired 
+    private AppointmentService appServe;
 
     private HttpStatus statusFor(String msg) {
         if (msg.endsWith("successfully")) return HttpStatus.OK;
@@ -78,5 +83,14 @@ public class PatientController {
     @GetMapping ("/frequent")
     public ResponseEntity<List<Patient>> getFrequent(@RequestParam long min) {
         return new ResponseEntity<>(patServe.getFrequent(min), HttpStatus.OK);
+    }
+
+    @GetMapping("/{ssNumber}/upcoming")
+    public ResponseEntity<?> getUpcoming(@PathVariable String ssNumber) {
+        List<Appointment> list = appServe.getUpcoming(ssNumber);
+        if (list == null) {
+            return new ResponseEntity<>("That patient with that ssnumber does not exist", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

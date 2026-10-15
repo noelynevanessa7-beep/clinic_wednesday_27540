@@ -19,4 +19,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     List<Doctor> findDoctorsWithoutOffice();
 
     boolean existsByOfficeIdAndIdNot(UUID officeId, UUID doctorId);
+
+    @Query("SELECT d FROM Doctor d WHERE LOWER(d.firstName) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(d.lastName) LIKE LOWER(CONCAT('%', :name, '%')) ORDER BY d.lastName ASC")
+    List<Doctor> searchByName(@Param("name") String name);
 }

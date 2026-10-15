@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import kigali.clinic.rw.domain.Doctor;
 import kigali.clinic.rw.domain.Specialization;
 import kigali.clinic.rw.service.DoctorService;
+import kigali.clinic.rw.domain.Appointment;
+import kigali.clinic.rw.service.AppointmentService;
 
 @RestController
 @RequestMapping(value = {"/api/doctor", "/api/doctors"})
@@ -18,6 +20,9 @@ public class DoctorController {
 
     @Autowired
     private DoctorService docServe;
+
+    @Autowired 
+    private AppointmentService appServe;
 
     private HttpStatus statusFor(String msg) {
         if (msg.endsWith("successfully")) return HttpStatus.OK;
@@ -121,5 +126,20 @@ public class DoctorController {
         }
 
         return new ResponseEntity<>(msg, status);
+    }
+
+    @GetMapping("/{doctorId}/agenda")
+    public ResponseEntity<?> getAgenda(@PathVariable UUID doctorId, @RequestParam String date) {
+        List<Appointment> list = appServe.getAgenda(doctorId, date);
+        if (list == null) {
+            return new  ResponseEntity<>("The doctor with that id does not exist", HttpStatus.NOT_FOUND);
+            
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Doctor>> searchDoctors(@RequestParam String name) {
+        return new ResponseEntity<>(docServe.searchDoctors(name), HttpStatus.OK);
     }
 }
