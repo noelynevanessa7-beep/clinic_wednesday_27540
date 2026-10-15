@@ -68,5 +68,8 @@ public class PrescriptionService {
         presRepo.delete(prescription);
         return "Prescription deleted successfully";
     }
-    
+
+    public List<Object[]> getTopMedicines() {
+        return presRepo.topMedicines();
+    }    
 }

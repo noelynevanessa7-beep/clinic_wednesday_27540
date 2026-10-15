@@ -197,4 +197,8 @@ public class AppointmentService {
         List<AppointmentStatus> statuses = List.of(AppointmentStatus.SCHEDULED, AppointmentStatus.CONFIRMED);
         return appRepo.findByPatientSsNumberAndAppointmentDateGreaterThanEqualAndStatusInOrderByAppointmentDateAsc(ssNumber,Date.valueOf(LocalDate.now()), statuses);
     }
+
+    public List<Object[]> getWorkload(String start, String end) {
+        return appRepo.doctorWorkload(AppointmentStatus.COMPLETED, Date.valueOf(start), Date.valueOf(end));
+    }
 }

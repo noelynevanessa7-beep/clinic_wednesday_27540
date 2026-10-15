@@ -68,4 +68,10 @@ public class PrescriptionController {
         return new ResponseEntity<>(msg, status);
     }
 
+    @GetMapping ("/stats/top-medicines")
+    public ResponseEntity<List<Object[]>> getTopMedicines() {
+        return new ResponseEntity<>(presServe.getTopMedicines(), HttpStatus.OK);
+        
+    }
+
 }

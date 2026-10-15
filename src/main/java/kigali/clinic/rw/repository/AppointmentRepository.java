@@ -73,5 +73,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
      long countByAppointmentDate(Date appointmentDate);
 
      long countByStatusIs(AppointmentStatus status);
+
+     @Query ("SELECT d.firstName, d.lastName, COUNT(a) FROM Appointment a JOIN a.doctor d WHERE a.status = :status AND a.appointmentDate BETWEEN :start AND :end GROUP BY d.id, d,firstName, d.lastName ORDER BY COUNT(a) DESC")
+     List<Object[]> doctorWorkload(@Param ("status") AppointmentStatus status, @Param ("start") Date start, @Param ("end") Date end);
 }
 

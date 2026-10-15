@@ -142,4 +142,10 @@ public class DoctorController {
     public ResponseEntity<List<Doctor>> searchDoctors(@RequestParam String name) {
         return new ResponseEntity<>(docServe.searchDoctors(name), HttpStatus.OK);
     }
+
+    @GetMapping("/workload")
+    public ResponseEntity<List<Object[]>> getWorkload(@RequestParam String start, @RequestParam String end) {
+        return new ResponseEntity<>(appServe.getWorkload(start, end), HttpStatus.OK);
+        
+    }
 }
