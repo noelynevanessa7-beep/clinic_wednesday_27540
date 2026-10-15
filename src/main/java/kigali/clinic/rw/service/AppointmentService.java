@@ -20,6 +20,7 @@ import kigali.clinic.rw.domain.Patient;
 import kigali.clinic.rw.repository.AppointmentRepository;
 import kigali.clinic.rw.repository.DoctorRepository;
 import kigali.clinic.rw.repository.PatientRepository;
+import kigali.clinic.rw.repository.PrescriptionRepository;
 
 @Service
 public class AppointmentService {
@@ -32,6 +33,9 @@ public class AppointmentService {
 
     @Autowired
     private DoctorRepository docRepo;
+
+    @Autowired
+    private PrescriptionRepository presRepo;
 
     // CREATE (needed so the queries below have data to work on)
     public String saveAppointment(Appointment appointment, UUID patientId, UUID doctorId) {
@@ -151,7 +155,7 @@ public class AppointmentService {
             return "The appointment with that id does not exist";
         }
         if (appointment.getStatus() == AppointmentStatus.COMPLETED || appointment.getStatus() == AppointmentStatus.CANCELLED) {
-            return "A" + appointment.getStatus() + " appointment cannot be rescheduled";
+            return "A " + appointment.getStatus() + " appointment cannot be rescheduled";
         }
         Date date = Date.valueOf(newDate);
         if (date.toLocalDate().isBefore(LocalDate.now())) {
@@ -165,6 +169,17 @@ public class AppointmentService {
         appointment.setStatus(AppointmentStatus.SCHEDULED);
         appRepo.save(appointment);
         return "Appointment rescheduled successfully";
+    }
+
+    public String deleteAppointment(UUID appointmentId) {
+        if(!appRepo.existsById(appointmentId)) {
+            return "The appointment with that id does not exist";
+        }
+        if (presRepo.existsByAppointmentId(appointmentId)) {
+            return "The appointment has a prescriptions, delete them first";
+        }
+        appRepo.deleteById(appointmentId);
+        return "Appointment deleted successfully";
     }
 
 }

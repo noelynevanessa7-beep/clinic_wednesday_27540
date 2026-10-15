@@ -129,7 +129,7 @@ public class AppointmentController {
         HttpStatus httpStatus = HttpStatus.OK;
         if (msg.contains("does not exist")) {
             httpStatus = HttpStatus.NOT_FOUND;
-        } else if (!msg.endsWith("Cannot change")) {
+        } else if (!msg.endsWith("successfully")) {
             httpStatus = HttpStatus.BAD_REQUEST;
         }
         return new ResponseEntity<>(msg, httpStatus);
@@ -145,7 +145,19 @@ public class AppointmentController {
             httpStatus = HttpStatus.BAD_REQUEST;
         
         } else if (!msg.endsWith("successfully")) {
-            httpStatus = HttpStatus.BAD_REQUEST;
+            httpStatus = HttpStatus.CONFLICT;
+        }
+        return new ResponseEntity<>(msg, httpStatus);
+    }
+
+    @DeleteMapping ("/delete/{id}")
+    public ResponseEntity<String> deleteAppointment(@PathVariable UUID id) {
+        String msg = appServe.deleteAppointment(id);
+        HttpStatus httpStatus = HttpStatus.OK;
+        if (msg.contains("does not exist")) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } else if (!msg.endsWith("successfully")) {
+            httpStatus = HttpStatus.CONFLICT;
         }
         return new ResponseEntity<>(msg, httpStatus);
     }
