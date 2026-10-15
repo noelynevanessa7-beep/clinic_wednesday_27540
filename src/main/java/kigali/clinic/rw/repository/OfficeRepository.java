@@ -20,4 +20,7 @@ public interface OfficeRepository extends JpaRepository<Office, UUID> {
     List<Office> findByOfficeNumberStartsWith(int startNumber);
 
     List<Office> findByOfficeNumberEndsWith(int endNumber);
+
+    @Query("SELECT o FROM Office o WHERE NOT EXISTS (SELECT d FROM Doctor d WHERE d.office = o) ORDER BY o.officeNumber ASC")
+    List<Office> findOfficesWithoutDoctor();
 }

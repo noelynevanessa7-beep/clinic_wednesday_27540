@@ -75,4 +75,8 @@ public class OfficeService {
     public List<Object[]> getBusiestOffices() {
         return appRepo.findBusiestOffice(PageRequest.of(0, 1));
     }
+
+    public List<Office> getOfficesWithoutDoctor() {
+        return offRepo.findOfficesWithoutDoctor();
+    }
 }

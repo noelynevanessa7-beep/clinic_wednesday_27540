@@ -69,4 +69,9 @@ public class OfficeController {
         String msg = offServe.deleteOffice(id);
         return new ResponseEntity<>(msg, statusFor(msg));
     }
+
+    @GetMapping ("/free")
+    public ResponseEntity<List<Office>> getOfficesWithoutDoctor() {
+        return new ResponseEntity<>(offServe.getOfficesWithoutDoctor(), HttpStatus.OK);
+    }
 }

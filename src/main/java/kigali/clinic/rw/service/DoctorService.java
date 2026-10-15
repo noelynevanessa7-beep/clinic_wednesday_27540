@@ -158,4 +158,25 @@ public class DoctorService {
         specRepo.save(specialization);
         return "Specialization removed from doctor ";
     }
+
+    public String changeOffice(UUID doctorId, int officeNumber) {
+        Doctor doctor = docRepo.findById(doctorId).orElse(null);
+        if (doctor == null) {
+            return "The doctor with that id does not exist";
+        }
+        Office office = offRepo.findByOfficeNumber(officeNumber).orElse(null);
+        if (office == null) {
+            return "The office with that office number does not exist";
+        }
+       if (docRepo.existsByOfficeIdAndIdNot(office.getId(), doctorId)) {
+            return "The office is taken byother doctor";
+        }
+        doctor.setOffice(office);
+        docRepo.save(doctor);
+        
+        return "Office changed successfully";
+    }
 }
+
+
+

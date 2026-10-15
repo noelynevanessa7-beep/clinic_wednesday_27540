@@ -109,4 +109,17 @@ public class DoctorController {
 
         return new ResponseEntity<>(msg, status);
     }
+
+    @PatchMapping ("/{doctorId}/office")
+    public ResponseEntity<String> changeOffice(@PathVariable UUID doctorId, @RequestParam int officeNumber) {
+        String msg = docServe.changeOffice(doctorId, officeNumber);
+        HttpStatus status =  HttpStatus.OK ;
+        if (msg.contains("does not exist")) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (!msg.equals("Office changed successfully")) {
+            status = HttpStatus.CONFLICT;
+        }
+
+        return new ResponseEntity<>(msg, status);
+    }
 }
