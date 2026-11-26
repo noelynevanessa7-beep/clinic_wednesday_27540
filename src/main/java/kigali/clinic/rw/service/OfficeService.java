@@ -69,6 +69,20 @@ public class OfficeService {
         return "Office is deleted successfully";
     }
 
+        
+    @Transactional
+    public String deleteOfficeByNumber(int officeNumber) {
+        Office office = offRepo.findByOfficeNumber(officeNumber).orElse(null);
+        if (office == null) {
+            return "Office not found";
+        }
+        if (office.getDoctor() != null) {
+            return "Office is assigned to a doctor, so it cannot be deleted";
+        }
+        offRepo.delete(office);
+        return "Office deleted successfully";
+    }
+
     @Autowired 
     private AppointmentRepository appRepo;
      

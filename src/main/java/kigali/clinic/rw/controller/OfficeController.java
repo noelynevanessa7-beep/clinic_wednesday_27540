@@ -13,6 +13,7 @@ import kigali.clinic.rw.service.OfficeService;
 
 @RestController
 @RequestMapping(value = {"/api/office", "/api/offices"})
+@CrossOrigin ("*")
 public class OfficeController {
 
     @Autowired
@@ -67,6 +68,12 @@ public class OfficeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOffice(@PathVariable UUID id) {
         String msg = offServe.deleteOffice(id);
+        return new ResponseEntity<>(msg, statusFor(msg));
+    }
+
+    @DeleteMapping("/deleteByNumber/{officeNumber}")
+    public ResponseEntity<String> deleteOfficeByNumber(@PathVariable int officeNumber) {
+        String msg = offServe.deleteOfficeByNumber(officeNumber);
         return new ResponseEntity<>(msg, statusFor(msg));
     }
 
